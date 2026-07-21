@@ -1,28 +1,29 @@
 class Solution:
     def maxActiveSectionsAfterTrade(self, s: str) -> int:
-        ones = s.count('1')
-
         t = '1' + s + '1'
-        n = len(t)
 
-        runs = []
+        ones = s.count('1')
+        max_gain = 0
+
+        # Store lengths of consecutive groups
+        groups = []
         i = 0
 
-        while i < n:
+        while i < len(t):
             j = i
-            while j < n and t[j] == t[i]:
+
+            while j < len(t) and t[j] == t[i]:
                 j += 1
-            runs.append((t[i], j - i))
+
+            groups.append((t[i], j - i))
             i = j
 
-        ans = ones
+        # Pattern: 0-block, 1-block, 0-block
+        for i in range(1, len(groups) - 1):
+            if groups[i][0] == '1':
+                left_zero = groups[i - 1][1]
+                right_zero = groups[i + 1][1]
 
-        for i in range(1, len(runs) - 1):
-            if (
-                runs[i][0] == '1'
-                and runs[i - 1][0] == '0'
-                and runs[i + 1][0] == '0'
-            ):
-                ans = max(ans, ones + runs[i - 1][1] + runs[i + 1][1])
+                max_gain = max(max_gain, left_zero + right_zero)
 
-        return ans
+        return ones + max_gain
