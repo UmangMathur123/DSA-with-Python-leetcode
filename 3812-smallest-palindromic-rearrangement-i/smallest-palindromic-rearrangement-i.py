@@ -2,15 +2,12 @@ from collections import Counter
 class Solution:
     def smallestPalindrome(self, s: str) -> str:
         count = Counter(s)
-
         left = ""
-        middle = ""
-
+        middle=""
         for ch in sorted(count):
-            left += ch *(count[ch]//2)
+            left += ch * (count[ch]//2)
 
-            if count[ch]%2==1:
-                middle += ch
+            if count[ch] % 2 ==1:
+                middle = ch
         return left+middle+left[::-1]
-
         
