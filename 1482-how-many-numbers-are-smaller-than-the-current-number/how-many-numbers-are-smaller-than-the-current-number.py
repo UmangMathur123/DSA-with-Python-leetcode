@@ -5,6 +5,6 @@ class Solution:
             c=0
             for j in nums:
                 if j<i:
-                    c+=1
+                    c=c+1
             ans.append(c)
         return ans
