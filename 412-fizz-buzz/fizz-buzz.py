@@ -6,7 +6,7 @@ class Solution:
                 ans.append("FizzBuzz")
             elif i%3==0:
                 ans.append("Fizz")
-            elif i%5==0:
+            elif  i%5==0:
                 ans.append("Buzz")
             else:
                 ans.append(str(i))
