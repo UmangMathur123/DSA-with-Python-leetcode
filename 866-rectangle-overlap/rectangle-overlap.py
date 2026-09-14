@@ -6,3 +6,4 @@ class Solution:
             rec1[1] < rec2[3] and
             rec1[3] > rec2[1]
         )
+        
