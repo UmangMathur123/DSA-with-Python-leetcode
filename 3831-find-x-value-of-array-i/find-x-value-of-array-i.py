@@ -30,4 +30,3 @@ class Solution:
             dp = new_dp
 
         return ans
-        
