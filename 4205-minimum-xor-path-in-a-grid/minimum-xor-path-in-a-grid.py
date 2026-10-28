@@ -1,15 +1,14 @@
 class Solution:
     def minCost(self, grid: list[list[int]]) -> int:
-        C = len(grid[0])
-        dp = [[False] * 1024 for _ in range(C)]
+        L = len(grid[0])
+        arr = [[False] * 1024 for _ in range(L)]
         
-        for r, row in enumerate(grid):
-            for c, v in enumerate(row):
+        for i, row in enumerate(grid):
+            for j, val in enumerate(row):
                 nxt = [False] * 1024
-                for x in range(1024):
-                    if dp[c][x] or (c > 0 and dp[c-1][x]) or (r == 0 and c == 0 and x == 0):
-                        nxt[x ^ v] = True
-                dp[c] = nxt
+                for k in range(1024):
+                    if arr[j][k] or (j > 0 and arr[j-1][k]) or (i == 0 and j == 0 and k == 0):
+                        nxt[k ^ val] = True
+                arr[j] = nxt
                 
-        return next(x for x, valid in enumerate(dp[-1]) if valid)
-
+        return next(ans for ans, ok in enumerate(arr[-1]) if ok)
