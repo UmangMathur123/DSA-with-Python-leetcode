@@ -1,27 +1,3 @@
-class SegmentTree:
-    def __init__(self, size):
-        self.n = size
-        self.tree = [0] * (4 * size)
-        
-    def update(self, node, start, end, idx, val):
-        if start == end:
-            self.tree[node] = val
-            return
-        mid = (start + end) // 2
-        if start <= idx <= mid:
-            self.update(2 * node, start, mid, idx, val)
-        else:
-            self.update(2 * node + 1, mid + 1, end, idx, val)
-        self.tree[node] = self.tree[2 * node] ^ self.tree[2 * node + 1]
-
-    def query(self, node, start, end, l, r):
-        if r < start or end < l:
-            return 0
-        if l <= start and end <= r:
-            return self.tree[node]
-        mid = (start + end) // 2
-        return self.query(2 * node, start, mid, l, r) ^ self.query(2 * node + 1, mid + 1, end, l, r)
-
 class Solution:
     def palindromePath(self, n: int, edges: list[list[int]], s: str, queries: list[str]) -> list[bool]:
         adj = [[] for _ in range(n)]
@@ -72,21 +48,46 @@ class Solution:
             if heavy[u] != -1:
                 stack.append((heavy[u], h))
                 
-        seg_tree = SegmentTree(n)
+        tree = [0] * (2 * n)
+        
         for i in range(n):
-            mask = 1 << (ord(s[i]) - ord('a'))
-            seg_tree.update(1, 0, n - 1, pos[i], mask)
+            tree[n + pos[i]] = 1 << (ord(s[i]) - ord('a'))
+            
+        for i in range(n - 1, 0, -1):
+            tree[i] = tree[2 * i] ^ tree[2 * i + 1]
+            
+        def seg_update(p, val):
+            p += n
+            tree[p] = val
+            while p > 1:
+                tree[p >> 1] = tree[p] ^ tree[p ^ 1]
+                p >>= 1
+                
+        def seg_query(l, r):
+            res = 0
+            l += n
+            r += n + 1
+            while l < r:
+                if l & 1:
+                    res ^= tree[l]
+                    l += 1
+                if r & 1:
+                    r -= 1
+                    res ^= tree[r]
+                l >>= 1
+                r >>= 1
+            return res
             
         def query_path(u, v):
             res_mask = 0
             while head[u] != head[v]:
                 if depth[head[u]] > depth[head[v]]:
                     u, v = v, u
-                res_mask ^= seg_tree.query(1, 0, n - 1, pos[head[v]], pos[v])
+                res_mask ^= seg_query(pos[head[v]], pos[v])
                 v = parent[head[v]]
             if depth[u] > depth[v]:
                 u, v = v, u
-            res_mask ^= seg_tree.query(1, 0, n - 1, pos[u], pos[v])
+            res_mask ^= seg_query(pos[u], pos[v])
             return res_mask
 
         ans = []
@@ -96,7 +97,7 @@ class Solution:
                 ui = int(parts[1])
                 c = parts[2]
                 mask = 1 << (ord(c) - ord('a'))
-                seg_tree.update(1, 0, n - 1, pos[ui], mask)
+                seg_update(pos[ui], mask)
             else:
                 ui = int(parts[1])
                 vi = int(parts[2])
