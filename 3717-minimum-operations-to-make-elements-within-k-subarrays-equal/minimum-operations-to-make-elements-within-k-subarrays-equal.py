@@ -99,4 +99,3 @@ class Solution:
                     dp[i][j] = min(dp[i][j], cost[i] + dp[i + x][j - 1])
                     
         return dp[0][k]
-
