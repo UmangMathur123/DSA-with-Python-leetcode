@@ -32,3 +32,5 @@ class Solution:
             heapq.heappush(busy, (t + task_time, weight, idx))
             
         return ans
+
+        
